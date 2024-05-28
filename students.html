@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+    />
+    <!-- <script src="./javascript/index.js"></script> -->
+    <!-- <script type="module" src="src/toastify.js"></script> -->
+    <link rel="stylesheet" href="./assets/index.css" />
+    <!-- <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    /> -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css"
+    />
+    <style>
+      div.complete {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 10%;
+        overflow: auto;
+      }
+
+      div.form {
+        height: 200px;
+      }
+
+      label {
+        margin: 20px;
+        display: block;
+        font-size: 32px;
+        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+          "Lucida Sans";
+      }
+
+      input {
+        padding: 10px;
+      }
+
+      span {
+        color: red;
+        position: fixed;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      button {
+        padding: 10px;
+        margin-top: 40px;
+        left: 50%;
+        position: fixed;
+        transform: translate(-50%, -50%);
+        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+          "Lucida Sans";
+      }
+
+      div#tables {
+        height: 300px;
+        overflow: auto;
+      }
+
+      table,
+      th,
+      td {
+        border: 1px solid red;
+        border-collapse: collapse;
+        font-size: 32px;
+        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+          "Lucida Sans";
+        padding: 10px;
+      }
+
+      th {
+        width: 20%;
+      }
+    </style>
+  </head>
+  <body id="container">
+    <p id="para"></p>
+    <!-- <button id="btn">buton</button> -->
+    <form id="myForm">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" />
+
+      <label for="age">Age:</label>
+      <input type="text" id="age" name="age" />
+      <label for="age">State:</label>
+      <input type="text" id="state" name="state" />
+
+      <button id="addBtn" type="submit" >Add</button>
+    </form>
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Age</th>
+        <th>state</th>
+        <th>delete</th>
+      </tr>
+      <tbody id="tableSection"></tbody>
+    </table>
+    <script src="/javascript/storage.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+    <script>
+      let updatedobj = 9;
+      var notyf = new Notyf();
+      var updBtn = false;
+      let btnText = document.getElementById("addBtn");
+
+      let arr = JSON.parse(localStorage.getItem("my-array")) || [];
+
+      function removeStudent(i) {
+        // console.log(JSON.stringify(i), "id of item to remove");
+        console.log(i, "iddddd");
+        // console.log(i, "ind");
+        // console.log(arr, "Array");
+        const data = JSON.parse(localStorage.getItem("my-array"));
+        console.log(data, " Datassssss");
+        const filteredArray = data.filter((item, index) => item.id !== i);
+        // console.log(filteredArray, "filter");
+        localStorage.setItem("my-array", JSON.stringify(filteredArray));
+        arr = filteredArray;
+        const getData = JSON.parse(localStorage.getItem("my-array"));
+        dataBinding(getData);
+      }
+      const handleUpdate = (updatedRecord) => {
+        console.log(updatedRecord, "updRecord");
+        const data = JSON.parse(localStorage.getItem("my-array"));
+        data.map((data) =>
+          updatedRecord.id == data.id ? updatedRecord : data
+        );
+      };
+      console.log(updBtn, "outside");
+      let updatedObject;
+      function updateStudent(i) {
+        console.log("updatecall");
+        updBtn = true;
+        console.log(updBtn, "upal");
+        updateButtonText();
+
+        // Set button text based on updBtn value
+
+        console.log(i, "record number");
+        const data = JSON.parse(localStorage.getItem("my-array"));
+        const recordToBeUpdated = data.find((item) => item.id == i);
+        console.log(recordToBeUpdated, "update want");
+        const nameField = document.getElementById("name");
+        const ageField = document.getElementById("age");
+        const stateField = document.getElementById("state");
+        // console.log(recordToBeUpdated.name, "name");
+        nameField.value = String(recordToBeUpdated.name);
+        ageField.value = String(recordToBeUpdated.age);
+        stateField.value = String(recordToBeUpdated.state);
+        updatedobj = {
+          id: i,
+          name: nameField.value,
+          age: parseInt(ageField.value),
+          state: stateField.value,
+        };
+        updatedObject = updatedobj;
+        // const fakeEvent = new Event("submit");
+        // callbackFunction(fakeEvent, updatedobj);
+      }
+
+      function updateButtonText() {
+        btnText.textContent = updBtn ? "Update" : "Add"; // Update button text
+      }
+      function someFunction() {
+        console.log("somecalled");
+        // Change updBtn value
+        updateButtonText(); // Update button text
+      }
+      const renderTableData = (result) => {
+        return result
+          .map((item, index) => {
+            // console.log(item.id, "idsss");
+            console.log(typeof item.id, "type");
+            console.log(typeof item, "item type");
+            return `<tr>
+              <td>${item.name}</td>
+              <td>${item.age}</td>
+              <td>${item.state}</td>
+              <td style="display:flex">
+
+
+      <a onclick="removeStudent('${item.id}')">
+        <i style="cursor:pointer" class="fas fa-trash"></i>
+      </a>
+                <a onclick="updateStudent('${item.id}')">
+                  <i style="cursor:pointer" class="fas fa-edit"></i></a>
+              </td>
+            </tr>`;
+          })
+          .join("");
+      };
+
+      const dataBinding = (result) => {
+        let x = document.getElementById("tableSection");
+        x.innerHTML = renderTableData(result);
+      };
+      const form = document.getElementById("myForm");
+
+      form.addEventListener("submit", () => callbackFunction(event));
+
+      function callbackFunction(event) {
+        // updBtn = false;
+        event.preventDefault();
+        // console.log(updatedobj, "ohdata");
+        // console.log(event, "ev");
+        updateButtonText();
+        // console.log(event, "eve");
+        // console.log(event.target, "eve target");
+        // console.log("hello0000000000");
+        if (updBtn == false) {
+          const myFormData = new FormData(event.target);
+          console.log(myFormData, "My Data");
+          let formDataObj = {};
+          myFormData.forEach((value, key) => (formDataObj[key] = value));
+          // console.log(formDataObj, "object");
+          //need to check if i work with the get data instead of array then whats happen
+          //if i passs the whole object to filter from the array whats happen
+          formDataObj.id = new Date();
+          arr.push(formDataObj);
+          notyf.success("Record has been added successfully!");
+          document.getElementById("myForm").reset();
+          addDatatolocalstorage("my-array", arr);
+          // localStorage.setItem("my-array", JSON.stringify(arr));
+          const getData = JSON.parse(localStorage.getItem("my-array"));
+          //getdata name chnage
+
+          // console.log(getData, "dataArray");
+          dataBinding(getData);
+        } else {
+          // event.preventDefault();
+          const nameField = document.getElementById("name");
+          const ageField = document.getElementById("age");
+          const stateField = document.getElementById("state");
+          updatedObject.name = nameField.value;
+          updatedObject.age = ageField.value;
+          updatedObject.state = stateField.value;
+          console.log(updatedObject, "objjjjj");
+          console.log(updBtn, "btnnn");
+
+          const getData = JSON.parse(localStorage.getItem("my-array"));
+          const newArray = getData.map((item) =>
+            item.id === updatedObject.id ? updatedObject : item
+          );
+          // console.log(newArray, "newArraaaaa");
+          addDatatolocalstorage("my-array", newArray);
+          dataBinding(newArray);
+        }
+      }
+
+      window.onload = function () {
+        const getData = JSON.parse(localStorage.getItem("my-array"));
+
+        dataBinding(getData);
+      };
+      // Example boolean value
+
+      // Select the button element
+    </script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script> -->
+  </body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "type": "module",
+  "dependencies": {
+    "notyf": "^3.10.0",
+    "toastify-js": "^1.12.0"
+  }
+}
